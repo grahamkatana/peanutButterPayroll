@@ -21,6 +21,10 @@ export interface IEmployeeRequest {
     updated_at: string;
     deleted_at?: string;
   }
+
+  export interface IEmployeesResponse {
+    data: IEmployeesRequest[];
+  }
   
 
   

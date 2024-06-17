@@ -1,27 +1,19 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllEmployeesFn } from "../api/employeeApi";
+import EmployeesTable from "../components/EmployeesTable";
 function EmployeesPage() {
-    const employeesQuery = useQuery({
-        queryKey: ["employees"],
-        queryFn: async () => {
-            let data = await getAllEmployeesFn();
-            console.log("DATA IS",data);
-        //   const response = await axios.get(
-        //     "https://reporting-engine.t6f.co.za/api/reports/ms/clients"
-        //   );
-        //   let data = await response.data;
-        //   data = data.data.filter((c: any) => c.id !== undefined);
-        //   setCompanies(data);
-        //   return {
-        //     data: data,
-        //   };
-        },
-    
-        // staleTime: 0,
-      });
-  
-  return <div>Employees</div>;
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["employees"],
+    queryFn: getAllEmployeesFn,
+  });
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
+
+  return <div>{data && <EmployeesTable data={data.data} />}</div>;
 }
 
 export default EmployeesPage;

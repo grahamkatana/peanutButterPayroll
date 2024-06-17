@@ -1,8 +1,8 @@
-import { IEmployeeRequest, IEmployeesRequest } from "../types/types";
+import { IEmployeeRequest,IEmployeesResponse } from "../types/types";
 import { baseApi } from "./baseApi";
 export const getAllEmployeesFn = async () => {
 
-    const response = await baseApi.get<IEmployeesRequest>(`employees`);
+    const response = await baseApi.get<IEmployeesResponse>(`employees`);
     return response.data;
 
 }
