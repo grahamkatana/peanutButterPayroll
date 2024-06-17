@@ -1,14 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllEmployeesFn } from "../api/employeeApi";
 import EmployeesTable from "../components/EmployeesTable";
-import {
-  Container,
-  SimpleGrid,
-  Flex,
-  Title,
-  UnstyledButton,
-} from "@mantine/core";
-import { schemes } from "../constants/Colors";
+import { Container, SimpleGrid, Flex, Title, Button } from "@mantine/core";
 import EmployeeFields from "../components/EmployeeFields";
 function EmployeesPage() {
   const { isLoading, isError, data, error } = useQuery({
@@ -44,9 +37,7 @@ function EmployeesPage() {
           direction="row"
           wrap="nowrap"
         >
-          <UnstyledButton bg={schemes.default} c={"#fff"} p={5}>
-            Add Employee
-          </UnstyledButton>
+          <Button variant="filled">Add Employee</Button>
         </Flex>
       </SimpleGrid>
       {/* Page Table */}

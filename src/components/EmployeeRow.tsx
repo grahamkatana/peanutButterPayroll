@@ -3,7 +3,7 @@ import { Table } from "@mantine/core";
 import { schemes } from "../constants/Colors";
 function EmployeeRow({ employee }: { employee: IEmployeesRequest }) {
   return (
-    <Table.Tr
+    <Table.Tr onClick={() => console.log(employee)}
       style={{
         backgroundColor:
           schemes[employee.profile_color as keyof typeof schemes],
@@ -13,7 +13,10 @@ function EmployeeRow({ employee }: { employee: IEmployeesRequest }) {
       <Table.Td>{employee.employee_number}</Table.Td>
       <Table.Td>{employee.first_name}</Table.Td>
       <Table.Td>{employee.last_name}</Table.Td>
-      <Table.Td>{employee.salutation}</Table.Td>
+      <Table.Td>
+        {employee.salutation.charAt(0).toUpperCase() +
+          employee.salutation.slice(1).toLowerCase()}
+      </Table.Td>
       <Table.Td>{employee.profile_color}</Table.Td>
     </Table.Tr>
   );
