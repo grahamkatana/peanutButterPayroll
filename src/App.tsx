@@ -1,10 +1,14 @@
-
-import EmployeesPage from './pages/employees'
-
+import Root from "./routes/root";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+  },
+ 
+]);
 function App() {
-  return (
-    <EmployeesPage />
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
