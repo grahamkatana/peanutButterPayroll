@@ -4,7 +4,7 @@ export interface IEmployeeRequest {
     gender: string;
     salutation: string;
     gross_salary: number;
-    profile_color: string;
+    profile_color: "default" | "blue" | "green" | "red";
     employee_number: number;
   }
 

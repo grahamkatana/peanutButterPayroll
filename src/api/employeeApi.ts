@@ -8,6 +8,7 @@ export const getAllEmployeesFn = async () => {
 }
 
 export const createEmployeesFn = async (data: IEmployeeRequest) => {
+    console.log("DATA IS:", data)
     const response = await baseApi.post<IEmployeeRequest>(`employees`, data);
     return response.data;
 };

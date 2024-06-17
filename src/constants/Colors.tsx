@@ -1,6 +1,6 @@
 export const schemes = {
-  blue: "#0096c7",
+  blue: "#1971C2",
   green: "#57cc99",
-  red: "#e63946",
-  default: "#228BE6",
+  red: "#E03131",
+  default: "#3B3B3B",
 };
