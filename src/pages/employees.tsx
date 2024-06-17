@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllEmployeesFn } from "../api/employeeApi";
 import EmployeesTable from "../components/EmployeesTable";
-import { Container, SimpleGrid, Flex, Title, Button, Box } from "@mantine/core";
+import { Container, SimpleGrid, Flex, Title, Button, Box, Loader, Center } from "@mantine/core";
 import EmployeeFields from "../components/EmployeeFields";
 import { EmployeesContext } from "../context/EmployeeContext";
 import { useContext } from "react";
@@ -12,7 +12,9 @@ function EmployeesPage() {
     queryFn: getAllEmployeesFn,
   });
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Center mt={'15%'}>
+        <Loader color="blue" type="dots" />
+    </Center>;
   }
   if (isError) {
     return <div>{error.message}</div>;

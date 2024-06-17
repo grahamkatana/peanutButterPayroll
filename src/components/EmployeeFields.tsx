@@ -62,30 +62,13 @@ function EmployeeFields() {
       setEmployee(null);
     },
     onError: (error: any) => {
+        console.log(error);
       setErrors(error?.response?.data?.errors);
     },
   });
 
   const editEmployee = (id: string, data: any) => {
     setErrors([]);
-    // const gendersDict =
-    //   {
-    //     Dr: "Unspecified",
-    //     Mr: "Male",
-    //     Ms: "Female",
-    //     Mrs: "Female",
-    //     Mx: "Unspecified",
-    //   }[salutation] || "Unspecified";
-    // const id = employee?.id;
-    // const data = {
-    //   first_name: firstName,
-    //   last_name: lastName,
-    //   gender: gendersDict,
-    //   salutation: salutation,
-    //   gross_salary: parseInt(grossSalary.replace(" ", "")),
-    //   profile_color: profileColor,
-    //   employee_number: employeeNumber,
-    // };
     // @ts-ignore
     updateEmployeeMutation.mutate({ id, data });
   };
@@ -103,7 +86,7 @@ function EmployeeFields() {
     const data = {
       first_name: firstName,
       last_name: lastName,
-      gender: gendersDict,
+      gender: gendersDict.toUpperCase(),
       salutation: salutation,
       gross_salary: parseInt(grossSalary.replace(" ", "")),
       profile_color: profileColor,
@@ -150,7 +133,7 @@ function EmployeeFields() {
 
   return showFields || employee ? (
     <Fieldset legend="Employee Information">
-      {errors.length > 0 &&
+      {errors?.length > 0 &&
         errors.map((error: any, index: number) => (
           <Notification key={index} color="red" title={"Error"}>
             {error?.msg || ""}
