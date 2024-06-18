@@ -10,6 +10,8 @@ import {
   Button,
   Flex,
   Notification,
+  Center,
+  Loader,
 } from "@mantine/core";
 import { useContext, useState, useEffect } from "react";
 import { EmployeesContext } from "../context/EmployeeContext";
@@ -18,10 +20,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateEmployeesFn, createEmployeesFn } from "../api/employeeApi";
 function EmployeeFields() {
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
   //   const queryClient = useQueryClient();
   const colors = ["green", "blue", "red", "default"];
   const queryClient = useQueryClient();
-  const { employee, showFields, setShowFields, setEmployee } = useContext(EmployeesContext);
+  const { employee, showFields, setShowFields, setEmployee } =
+    useContext(EmployeesContext);
   const [title, setTitle] = useState("Save");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -48,9 +52,11 @@ function EmployeeFields() {
       reset();
       setShowFields(false);
       setEmployee(null);
+      setLoading(false);
     },
     onError: (error: any) => {
       setErrors(error?.response?.data?.errors);
+      setLoading(false);
     },
   });
   const updateEmployeeMutation = useMutation({
@@ -60,10 +66,12 @@ function EmployeeFields() {
       reset();
       setShowFields(false);
       setEmployee(null);
+      setLoading(false);
     },
     onError: (error: any) => {
-        console.log(error);
+      console.log(error);
       setErrors(error?.response?.data?.errors);
+      setLoading(false);
     },
   });
 
@@ -74,6 +82,7 @@ function EmployeeFields() {
   };
 
   const handleAction = (title: string) => {
+    setLoading(true);
     const gendersDict =
       {
         Dr: "Unspecified",
@@ -103,7 +112,8 @@ function EmployeeFields() {
     }
   };
 
-  const reset = () =>{
+  const reset = () => {
+    setLoading(false);
     setFirstName("");
     setLastName("");
     setGender("");
@@ -114,7 +124,8 @@ function EmployeeFields() {
     setErrors([]);
     setShowFields(false);
     setEmployee(null);
-  }
+  };
+
   useEffect(() => {
     if (employee) {
       setTitle("Update");
@@ -139,125 +150,134 @@ function EmployeeFields() {
             {error?.msg || ""}
           </Notification>
         ))}
+      {loading ? (
+        <Center>
+          <Loader color="blue" type="dots" />
+        </Center>
+      ) : (
+        <>
+          <Flex
+            mih={50}
+            gap="xl"
+            justify="flex-end"
+            align="center"
+            direction="row"
+            wrap="nowrap"
+          >
+            <Button onClick={() => reset()} color="red" variant="filled">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleAction(title)}
+              color={schemes[profileColor]}
+              variant="filled"
+            >
+              {title}
+            </Button>
+          </Flex>
 
-      <Flex
-        mih={50}
-        gap="xl"
-        justify="flex-end"
-        align="center"
-        direction="row"
-        wrap="nowrap"
-      >
-        <Button onClick={()=>reset()} color="red" variant="filled">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => handleAction(title)}
-          color={schemes[profileColor]}
-          variant="filled"
-        >
-          {title}
-        </Button>
-      </Flex>
-
-      <SimpleGrid cols={2} spacing={100}>
-        <Paper>
-          <TextInput
-            onChange={(event) => setFirstName(event.currentTarget.value)}
-            value={firstName}
-            variant="filled"
-            label="First Name(s)"
-            withAsterisk
-            placeholder=""
-          />
-          <TextInput
-            onChange={(event) => setLastName(event.currentTarget.value)}
-            value={lastName}
-            variant="filled"
-            label="Last Name"
-            withAsterisk
-            placeholder=""
-          />
-          <Select
-            onChange={(_value, option) => {
-              setSalutation(option.value);
-            }}
-            variant="filled"
-            withAsterisk
-            value={salutation}
-            label="Salutation"
-            placeholder="Salutation"
-            data={["Dr", "Mr", "Ms", "Mrs", "Mx"]}
-          />
-          <Group mt={"xs"}>
-            <Radio
-              disabled
-              checked={salutation === "Mr"}
-              name="gender"
-              label={"Male"}
-              value={"MALE"}
-              onChange={() => setGender(gender)}
-            />
-            <Radio
-              disabled
-              checked={salutation === "Mrs" || salutation === "Ms"}
-              name="gender"
-              label={"Female"}
-              value={"FEMALE"}
-              onChange={() => setGender(gender)}
-            />
-            <Radio
-              disabled
-              checked={salutation === "Dr" || salutation === "Mx"}
-              name="gender"
-              label={"Unspecified"}
-              value={"UNSPECIFIED"}
-              onChange={() => setGender(gender)}
-            />
-          </Group>
-          <TextInput
-            onChange={(event) => setEmployeeNumber(event.currentTarget.value)}
-            value={employeeNumber}
-            type="number"
-            variant="filled"
-            label="Employee #"
-            withAsterisk
-            placeholder=""
-          />
-        </Paper>
-        <Paper>
-          <TextInput
-            disabled
-            value={`${firstName} ${lastName}`}
-            variant="filled"
-            label="Full Name"
-            placeholder=""
-          />
-          <TextInput
-            onChange={(event) => setGrossSalary(event.currentTarget.value)}
-            value={padded(grossSalary)}
-            type="text"
-            inputMode="numeric"
-            variant="filled"
-            label="Gross Salary $PY"
-            withAsterisk
-            placeholder=""
-          />
-          <Group mt="xs">
-            {colors.map((color) => (
-              <Checkbox
-                onChange={() => {
-                  setProfileColor(color as keyof typeof schemes);
-                }}
-                checked={profileColor.toLowerCase() === color.toLowerCase()}
-                key={color}
-                value={color}
-                label={color.toUpperCase()}
+          <SimpleGrid cols={2} spacing={100}>
+            <Paper>
+              <TextInput
+                onChange={(event) => setFirstName(event.currentTarget.value)}
+                value={firstName}
+                variant="filled"
+                label="First Name(s)"
+                withAsterisk
+                placeholder=""
               />
-            ))}
-          </Group>
-        </Paper>
-      </SimpleGrid>
+              <TextInput
+                onChange={(event) => setLastName(event.currentTarget.value)}
+                value={lastName}
+                variant="filled"
+                label="Last Name"
+                withAsterisk
+                placeholder=""
+              />
+              <Select
+                onChange={(_value, option) => {
+                  setSalutation(option.value);
+                }}
+                variant="filled"
+                withAsterisk
+                value={salutation}
+                label="Salutation"
+                placeholder="Salutation"
+                data={["Dr", "Mr", "Ms", "Mrs", "Mx"]}
+              />
+              <Group mt={"xs"}>
+                <Radio
+                  disabled
+                  checked={salutation === "Mr"}
+                  name="gender"
+                  label={"Male"}
+                  value={"MALE"}
+                  onChange={() => setGender(gender)}
+                />
+                <Radio
+                  disabled
+                  checked={salutation === "Mrs" || salutation === "Ms"}
+                  name="gender"
+                  label={"Female"}
+                  value={"FEMALE"}
+                  onChange={() => setGender(gender)}
+                />
+                <Radio
+                  disabled
+                  checked={salutation === "Dr" || salutation === "Mx"}
+                  name="gender"
+                  label={"Unspecified"}
+                  value={"UNSPECIFIED"}
+                  onChange={() => setGender(gender)}
+                />
+              </Group>
+              <TextInput
+                onChange={(event) =>
+                  setEmployeeNumber(event.currentTarget.value)
+                }
+                value={employeeNumber}
+                type="number"
+                variant="filled"
+                label="Employee #"
+                withAsterisk
+                placeholder=""
+              />
+            </Paper>
+            <Paper>
+              <TextInput
+                disabled
+                value={`${firstName} ${lastName}`}
+                variant="filled"
+                label="Full Name"
+                placeholder=""
+              />
+              <TextInput
+                onChange={(event) => setGrossSalary(event.currentTarget.value)}
+                value={padded(grossSalary)}
+                type="text"
+                inputMode="numeric"
+                variant="filled"
+                label="Gross Salary $PY"
+                withAsterisk
+                placeholder=""
+              />
+              <Group mt="xs">
+                {colors.map((color) => (
+                  <Checkbox
+                    onChange={() => {
+                      setProfileColor(color as keyof typeof schemes);
+                    }}
+                    checked={profileColor.toLowerCase() === color.toLowerCase()}
+                    key={color}
+                    value={color}
+                    label={color.toUpperCase()}
+                  />
+                ))}
+              </Group>
+            </Paper>
+          </SimpleGrid>
+        </>
+      )}
     </Fieldset>
   ) : null;
 }
